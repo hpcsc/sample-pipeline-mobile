@@ -1,0 +1,33 @@
+format_version: 2
+pipelines:
+  Mobile_UATDeployment_IOS:
+    group: SamplePipeline
+    materials:
+      backend:
+        git: http://git-repo:3000/gocd/mobile.git
+        branch: master
+      SystemTestsPassed:
+        pipeline: System_Tests
+        stage: Approve
+    stages:
+      - Generate_IPA:
+          clean_workspace: true
+          jobs:
+            Generate_IPA:
+              tasks:
+                - exec:
+                    run_if: passed
+                    command: /bin/bash
+                    arguments:
+                    - ./scripts/acceptance/ios-generate-ipa.sh
+                    - UAT
+      - Upload_To_Testfairy:
+          jobs:
+            Upload_To_Testfairy:
+              tasks:
+                - exec:
+                    run_if: passed
+                    command: /bin/bash
+                    arguments:
+                    - ./scripts/acceptance/ios-upload-testfairy.sh
+                    - UAT

@@ -1,0 +1,33 @@
+format_version: 2
+pipelines:
+  Mobile_UATDeployment_Android:
+    group: SamplePipeline
+    materials:
+      backend:
+        git: http://git-repo:3000/gocd/mobile.git
+        branch: master
+      SystemTestsPassed:
+        pipeline: System_Tests
+        stage: Approve
+    stages:
+      - Generate_APK:
+          clean_workspace: true
+          jobs:
+            Generate_APK:
+              tasks:
+                - exec:
+                    run_if: passed
+                    command: /bin/bash
+                    arguments:
+                    - ./scripts/acceptance/android-generate-apk.sh
+                    - UAT
+      - Upload_To_Testfairy:
+          jobs:
+            Upload_To_Testfairy:
+              tasks:
+                - exec:
+                    run_if: passed
+                    command: /bin/bash
+                    arguments:
+                    - ./scripts/acceptance/android-upload-testfairy.sh
+                    - UAT
