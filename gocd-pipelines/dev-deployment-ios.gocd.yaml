@@ -4,7 +4,7 @@ pipelines:
     group: SamplePipeline
     materials:
       backend:
-        git: http://git-repo:3000/gocd/mobile.git
+        git: http://git-repo:3000/gogs/sample-pipeline-mobile.git
         branch: master
       MobileCommitPhasePassed:
         pipeline: Mobile_CommitPhase
